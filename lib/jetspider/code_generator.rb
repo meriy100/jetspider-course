@@ -133,7 +133,22 @@ module JetSpider
     end
 
     def visit_OpEqualNode(n)
-      raise NotImplementedError, 'OpEqualNode'
+
+      var = n.left.variable
+      case
+      when var.parameter?
+        visit n.value
+        @asm.setarg var.index
+      when var.local?
+        visit n.value
+        @asm.setlocal var.index
+      when var.global?
+        @asm.bindgname var.name
+        visit n.value
+        @asm.setgname var.name
+      else
+        raise "[FATAL] unsupported variable type for dereference: #{var.inspect}"
+      end
     end
 
     def visit_VarStatementNode(n)
