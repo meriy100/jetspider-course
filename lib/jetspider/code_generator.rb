@@ -225,9 +225,33 @@ module JetSpider
     end
 
     def visit_AddNode(n)
-      visit n.left
-      visit n.value
-      @asm.add
+      if n.value.is_a?(RKelly::Nodes::NumberNode) && check_number_node?(n.left)
+        n.value.value += number_node_chain(n.left)
+        visit n.value
+      else
+        visit n.left
+        visit n.value
+        @asm.add
+      end
+    end
+
+    def number_node_chain(n)
+      if n.is_a?(RKelly::Nodes::NumberNode)
+        n.value
+      else
+        n.value.value += number_node_chean(n.left)
+        n.value.value
+      end
+    end
+
+    def check_number_node?(n)
+      if n.is_a?(RKelly::Nodes::NumberNode)
+        true
+      elsif n.is_a?(RKelly::Nodes::AddNode) && n.value.is_a?(RKelly::Nodes::NumberNode)
+        check_number_node? n.left
+      else
+        false
+      end
     end
 
     def visit_SubtractNode(n)
