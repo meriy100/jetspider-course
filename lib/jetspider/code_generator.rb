@@ -133,7 +133,7 @@ module JetSpider
     end
 
     def visit_OpEqualNode(n)
-
+      binding.pry
       var = n.left.variable
       case
       when var.parameter?
