@@ -319,21 +319,24 @@ module JetSpider
       # binding.pry
       if n.value == "++"
         var = n.operand.variable
-        visit n.operand
+        # visit n.operand
         case
         when var.parameter?
           visit n.operand
+          @asm.push
           @asm.one
           @asm.add
           @asm.setarg var.index
         when var.local?
           visit n.operand
+          @asm.push
           @asm.one
           @asm.add
           @asm.setlocal var.index
         when var.global?
           @asm.bindgname var.name
           visit n.operand
+          @asm.push
           @asm.one
           @asm.add
           @asm.setgname var.name
