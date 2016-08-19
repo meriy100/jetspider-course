@@ -225,9 +225,8 @@ module JetSpider
     end
 
     def visit_AddNode(n)
-      if n.value.is_a?(RKelly::Nodes::NumberNode) && check_number_node?(n.left)
-        n.value.value += number_node_chain(n.left)
-        visit n.value
+      if check_number_node?(n.value) && check_number_node?(n.left)
+        @asm.int8(number_node_chain(n.value) + number_node_chain(n.left))
       else
         visit n.left
         visit n.value
@@ -239,16 +238,17 @@ module JetSpider
       if n.is_a?(RKelly::Nodes::NumberNode)
         n.value
       else
-        n.value.value += number_node_chean(n.left)
-        n.value.value
+        n = n.value if n.is_a?(RKelly::Nodes::ParentheticalNode)
+        number_node_chain(n.value) + number_node_chain(n.left)
       end
     end
 
     def check_number_node?(n)
+      n = n.value if n.is_a?(RKelly::Nodes::ParentheticalNode)
       if n.is_a?(RKelly::Nodes::NumberNode)
         true
-      elsif n.is_a?(RKelly::Nodes::AddNode) && n.value.is_a?(RKelly::Nodes::NumberNode)
-        check_number_node? n.left
+      elsif n.is_a?(RKelly::Nodes::AddNode)
+        check_number_node?(n.value) && check_number_node?(n.left)
       else
         false
       end
