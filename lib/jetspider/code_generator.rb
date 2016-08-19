@@ -185,18 +185,18 @@ module JetSpider
     end
 
     def visit_WhileNode(n)
-      # binding.pry
-      endloc = @asm.lazy_location
+      @asm.end_locs << @asm.lazy_location
 
-      loc = @asm.location
+      @asm.start_locs << @asm.location
       visit n.left
-      @asm.ifeq endloc
+      @asm.ifeq @asm.end_loc
 
       visit n.value
 
-      @asm.goto loc
+      @asm.goto @asm.start_loc
 
-      @asm.fix_location endloc
+      @asm.fix_location @asm.end_loc
+      @asm.loc_pop
     end
 
     def visit_DoWhileNode(n)
@@ -208,11 +208,11 @@ module JetSpider
     end
 
     def visit_BreakNode(n)
-      raise NotImplementedError, 'BreakNode'
+      @asm.goto @asm.end_loc
     end
 
     def visit_ContinueNode(n)
-      raise NotImplementedError, 'ContinueNode'
+      @asm.goto @asm.start_loc
     end
 
     def visit_SwitchNode(n) raise "SwitchNode not implemented"; end

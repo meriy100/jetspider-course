@@ -7,9 +7,26 @@ module JetSpider
     def initialize(object_unit)
       @object_unit = object_unit
       @pc = 0
+      @start_locs = []
+      @end_locs = []
     end
 
     attr_reader :object_unit
+    attr_accessor :start_locs
+    attr_accessor :end_locs
+
+    def start_loc
+      @start_locs.last
+    end
+
+    def end_loc
+      @end_locs.last
+    end
+
+    def loc_pop
+      @start_locs.pop
+      @end_locs.pop
+    end
 
     private
 
