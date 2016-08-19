@@ -319,6 +319,7 @@ module JetSpider
       # binding.pry
       if n.value == "++"
         var = n.operand.variable
+        visit n.operand
         case
         when var.parameter?
           visit n.operand
@@ -339,6 +340,7 @@ module JetSpider
         else
           raise "[FATAL] unsupported variable type for dereference: #{var.inspect}"
         end
+        @asm.pop
       else
         raise "PostfixNode not implemented"
       end
