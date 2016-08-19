@@ -273,11 +273,12 @@ module JetSpider
     simple_binary_op 'ModulusNode', :mod
 
     def visit_UnaryPlusNode(n)
-      raise NotImplementedError, 'UnaryPlusNode'
+      visit n.value
     end
 
     def visit_UnaryMinusNode(n)
-      raise NotImplementedError, 'UnaryMinusNode'
+      n.value.value *= -1
+      visit n.value
     end
 
     def visit_PrefixNode(n)
@@ -363,13 +364,15 @@ module JetSpider
     def visit_NumberNode(n)
       if n.value == 1
         @asm.one
+      elsif n.value.size > 7
+        @asm.int32 n.value
       else
         @asm.int8 n.value
       end
     end
 
     def visit_StringNode(n)
-      raise NotImplementedError, 'StringNode'
+      @asm.string n.value.delete("\"")
     end
 
     def visit_ArrayNode(n) raise "ArrayNode not implemented"; end
