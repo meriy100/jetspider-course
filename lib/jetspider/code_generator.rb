@@ -83,7 +83,9 @@ module JetSpider
     #
 
     def visit_FunctionCallNode(n)
-      raise NotImplementedError, 'FunctionCallNode'
+      @asm.callgname n.value.value
+      visit n.arguments
+      @asm.call n.arguments.value.count
     end
 
     def visit_FunctionDeclNode(n)
@@ -101,7 +103,13 @@ module JetSpider
     end
 
     # These nodes should not be visited directly
-    def visit_ArgumentsNode(n) raise "[FATAL] ArgumentsNode visited"; end
+    def visit_ArgumentsNode(n)
+      n.value.each do |node|
+        visit node
+      end
+      # raise "[FATAL] ArgumentsNode visited";
+    end
+
     def visit_FunctionBodyNode(n) raise "[FATAL] FunctionBodyNode visited"; end
     def visit_ParameterNode(n) raise "[FATAL] ParameterNode visited"; end
 
