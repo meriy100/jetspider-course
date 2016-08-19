@@ -208,7 +208,6 @@ module JetSpider
     end
 
     def visit_AddNode(n)
-      # raise NotImplementedError, 'AddNode'
       visit n.left
       visit n.value
       @asm.add
