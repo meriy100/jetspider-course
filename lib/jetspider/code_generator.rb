@@ -372,8 +372,20 @@ module JetSpider
     end
 
     def visit_StringNode(n)
-      @asm.string n.value.delete("\"")
+      @asm.string escape_escape n.value.gsub(/^\"/, "").gsub(/\"$/, "")
     end
+
+    def escape_escape(str)
+       str.gsub("\\n", "\n").
+           gsub("\\\"", "\"").
+           gsub("\\r", "\r").
+           gsub("\\b", "\b").
+           gsub("\\v", "\v").
+           gsub("\\f", "\f").
+           gsub("\\'", "\'").
+           gsub("\\0", "\0")
+    end
+
 
     def visit_ArrayNode(n) raise "ArrayNode not implemented"; end
     def visit_ElementNode(n) raise "ElementNode not implemented"; end
